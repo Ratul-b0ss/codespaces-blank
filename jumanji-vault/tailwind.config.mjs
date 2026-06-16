@@ -1,0 +1,55 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./src/**/*.{astro,html,js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        ink: '#efefef',
+        body: '#999999',
+        mute: '#555555',
+        hairline: '#1e1e1e',
+        'hairline-strong': '#2a2a2a',
+        canvas: '#090909',
+        'canvas-soft': '#0f0f0f',
+        'canvas-soft-2': '#141414',
+        primary: '#FFD700',
+        'on-primary': '#090909',
+        gold: '#FFD700',
+        'gold-deep': '#f0c300',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'monospace'],
+      },
+      spacing: {
+        xxs: '4px',
+        xs: '8px',
+        sm: '12px',
+        md: '16px',
+        lg: '24px',
+        xl: '32px',
+        '2xl': '40px',
+        '3xl': '48px',
+        '4xl': '64px',
+        '5xl': '96px',
+        '6xl': '128px',
+        '7xl': '192px',
+      },
+      borderRadius: {
+        xs: '4px',
+        sm: '6px',
+        md: '8px',
+        lg: '12px',
+        xl: '16px',
+        pill: '100px',
+        full: '9999px',
+      },
+      boxShadow: {
+        'card': '0 4px 24px rgba(0,0,0,0.4)',
+        'glow-gold': '0 0 24px rgba(255, 215, 0, 0.3)',
+        'glow-gold-sm': '0 0 12px rgba(255, 215, 0, 0.2)',
+      },
+    },
+  },
+  plugins: [],
+};

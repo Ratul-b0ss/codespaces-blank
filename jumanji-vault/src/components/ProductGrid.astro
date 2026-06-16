@@ -1,0 +1,155 @@
+---
+// Product Grid — reads from localStorage with fallback to defaults
+---
+
+<section class="bg-canvas py-5xl md:py-6xl" id="products">
+  <div class="container-custom">
+    <div class="text-center mb-12 fade-up">
+      <p class="font-mono text-xs text-gold/60 uppercase tracking-[0.12em] mb-3">Featured Sets</p>
+      <h2 class="font-sans text-3xl md:text-4xl font-bold -tracking-[1px] text-ink">Premium LEGO Collection</h2>
+      <p class="font-sans text-sm md:text-base text-body/70 max-w-[520px] mx-auto mt-3">Curated minifigures and sets for serious collectors.</p>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-2 mb-10 fade-up" id="filterContainer">
+      <button class="font-sans text-sm leading-5 px-4 py-2 border border-hairline rounded-lg bg-gold text-on-primary border-gold font-medium cursor-pointer transition-all duration-200 hover:bg-gold-deep hover:text-on-primary hover:border-gold-deep hover:shadow-glow-gold-sm" data-filter="all">All</button>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5" id="productGrid">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    'use strict';
+
+    const PRODS_KEY = 'jumanji_products';
+    const defaultProducts = [
+      { name: 'Police Station', category: 'city', categoryLabel: 'City', price: '৳4,500', imageUrl: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400&h=400&fit=crop&q=80' },
+      { name: 'Millennium Falcon 7531', category: 'star-wars', categoryLabel: 'Star Wars', price: '৳12,900', imageUrl: 'https://images.unsplash.com/photo-1605899435973-ca2d1a8431cf?w=400&h=400&fit=crop&q=80' },
+      { name: 'Porsche 911 GT3 RS', category: 'technic', categoryLabel: 'Technic', price: '৳28,500', imageUrl: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=400&fit=crop&q=80' },
+      { name: 'Fire Station & Truck', category: 'city', categoryLabel: 'City', price: '৳3,800', imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=400&fit=crop&q=80' },
+      { name: 'Creative Classic Box', category: 'classic', categoryLabel: 'Classic', price: '৳2,900', imageUrl: 'https://images.unsplash.com/photo-1589825746001-0e9e9e8f5a0a?w=400&h=400&fit=crop&q=80' },
+      { name: 'Heartlake City Set', category: 'friends', categoryLabel: 'Friends', price: '৳5,200', imageUrl: 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=400&h=400&fit=crop&q=80' },
+      { name: 'Hydraulic Bulldozer', category: 'technic', categoryLabel: 'Technic', price: '৳19,900', imageUrl: 'https://images.unsplash.com/photo-1530047197337-9b7b4e0b1b0e?w=400&h=400&fit=crop&q=80' },
+      { name: 'Death Star 75188', category: 'star-wars', categoryLabel: 'Star Wars', price: '৳15,500', imageUrl: 'https://images.unsplash.com/photo-1534100515-f0d4f0f3b70e?w=400&h=400&fit=crop&q=80' },
+    ];
+
+    function getProducts() {
+      try {
+        const stored = localStorage.getItem(PRODS_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed.length > 0) return parsed;
+        }
+      } catch {}
+      return defaultProducts;
+    }
+
+    // Extract unique categories from products
+    function getCategories(prods) {
+      const cats = ['all'];
+      prods.forEach(p => {
+        const key = (p.category || '').toLowerCase();
+        if (!cats.includes(key)) cats.push(key);
+      });
+      return cats;
+    }
+
+    function getLabel(prods, key) {
+      if (key === 'all') return 'All';
+      const p = prods.find(p => (p.category || '').toLowerCase() === key);
+      return p ? (p.categoryLabel || key) : key;
+    }
+
+    let currentFilter = 'all';
+
+    function renderProducts() {
+      const prods = getProducts();
+      const grid = document.getElementById('productGrid');
+      const filterContainer = document.getElementById('filterContainer');
+
+      // Render filter buttons
+      const cats = getCategories(prods);
+      filterContainer.innerHTML = cats.map(key => `
+        <button class="filter-btn font-sans text-sm leading-5 px-4 py-2 border rounded-lg cursor-pointer transition-all duration-200 ${
+          key === currentFilter
+            ? 'bg-gold text-on-primary border-gold font-medium hover:bg-gold-deep hover:text-on-primary hover:border-gold-deep hover:shadow-glow-gold-sm'
+            : 'border-hairline bg-canvas text-body hover:border-gold/30 hover:text-gold'
+        }" data-filter="${key}">${getLabel(prods, key)}</button>
+      `).join('');
+
+      // Re-bind filter clicks
+      filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentFilter = btn.dataset.filter;
+          renderProducts();
+        });
+      });
+
+      // Render cards
+      const filtered = currentFilter === 'all'
+        ? prods
+        : prods.filter(p => (p.category || '').toLowerCase() === currentFilter);
+
+      grid.innerHTML = filtered.map((product, i) => `
+        <div class="fade-up stagger-${(i % 8) + 1}">
+          <div class="product-card bg-canvas-soft-2 rounded-lg p-4 transition-all duration-300 cursor-pointer relative overflow-hidden border border-hairline hover:border-gold/20 hover:-translate-y-0.5" data-category="${product.category}">
+            <div class="relative w-full aspect-square rounded-lg overflow-hidden bg-canvas mb-3">
+              <img src="${product.imageUrl}" alt="${product.name}" loading="lazy" decoding="async" width="400" height="400" class="w-full h-full object-cover block transition-transform duration-500" />
+            </div>
+            <p class="product-category font-mono text-[11px] text-mute uppercase tracking-[0.08em] mb-1.5">${product.categoryLabel || product.category}</p>
+            <h3 class="product-name font-sans text-sm font-medium text-ink mb-1 line-clamp-2">${product.name}</h3>
+            <div class="flex items-center justify-between mt-3">
+              <span class="product-price font-sans text-base font-bold text-gold">${product.price}</span>
+              <button class="quick-add w-8 h-8 rounded-lg bg-gold border-none cursor-pointer flex items-center justify-center text-on-primary text-sm font-bold transition-all duration-200 hover:shadow-glow-gold-sm hover:scale-105" aria-label="Add to cart">+</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Bind quick-add
+      grid.querySelectorAll('.quick-add').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const card = this.closest('.product-card');
+          const name = card?.querySelector('.product-name')?.textContent?.trim();
+          const category = card?.dataset?.category || '';
+          const categoryLabel = card?.querySelector('.product-category')?.textContent?.trim() || '';
+          const price = card?.querySelector('.product-price')?.textContent?.trim() || '';
+          const img = card?.querySelector('img')?.src || '';
+
+          if (name && window.__addToCart) {
+            window.__addToCart({ name, category, categoryLabel, price, imageUrl: img });
+            this.textContent = '✓';
+            this.style.background = '#FFD700';
+            this.style.boxShadow = '0 0 16px rgba(255, 215, 0, 0.4)';
+            this.style.color = '#090909';
+            setTimeout(() => {
+              this.textContent = '+';
+              this.style.background = '';
+              this.style.boxShadow = '';
+              this.style.color = '';
+            }, 1200);
+          }
+        });
+      });
+
+      // Trigger fade-up observer
+      document.querySelectorAll('.fade-up').forEach(el => {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        observer.observe(el);
+      });
+    }
+
+    // Listen for product updates from admin
+    window.addEventListener('products-updated', () => renderProducts());
+
+    document.addEventListener('DOMContentLoaded', () => renderProducts());
+  })();
+</script>

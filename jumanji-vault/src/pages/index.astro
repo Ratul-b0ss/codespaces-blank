@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import ProductGrid from '../components/ProductGrid.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Jumanji Vault — Premium LEGO Minifigures"
+  description="Jumanji Vault — Premium LEGO Minifigures and sets for collectors worldwide."
+  preloadHero={true}
+>
+  <Nav />
+  <main>
+    <Hero />
+    <ProductGrid />
+  </main>
+
+  <Footer />
+
+  <script>
+    (function() {
+      'use strict';
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const href = this.getAttribute('href');
+          if (href === '#') return;
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      const filterBtns = document.querySelectorAll('[data-filter]');
+      const productCards = document.querySelectorAll('.product-card');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const filter = btn.dataset.filter;
+          productCards.forEach(card => {
+            if (filter === 'all' || card.dataset.category === filter) {
+              card.style.display = '';
+              card.style.opacity = '0';
+              card.style.transform = 'translateY(16px)';
+              requestAnimationFrame(() => {
+                card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+              });
+            } else {
+              card.style.opacity = '0';
+              card.style.transform = 'translateY(8px) scale(0.98)';
+              setTimeout(() => { card.style.display = 'none'; }, 300);
+            }
+          });
+        });
+      });
+
+      // Quick-add: wire up add-to-cart buttons
+      document.querySelectorAll('.quick-add').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const card = this.closest('.product-card');
+          const name = card?.querySelector('.product-name')?.textContent?.trim();
+          const category = card?.dataset?.category || '';
+          const categoryLabel = card?.querySelector('.product-category')?.textContent?.trim() || '';
+          const price = card?.querySelector('.product-price')?.textContent?.trim() || '';
+          const img = card?.querySelector('img')?.src || '';
+
+          if (name && window.__addToCart) {
+            window.__addToCart({ name, category, categoryLabel, price, imageUrl: img });
+            // Visual feedback
+            this.textContent = '✓';
+            this.style.background = '#FFD700';
+            this.style.boxShadow = '0 0 16px rgba(255, 215, 0, 0.4)';
+            this.style.color = '#090909';
+            setTimeout(() => {
+              this.textContent = '+';
+              this.style.background = '';
+              this.style.boxShadow = '';
+              this.style.color = '';
+            }, 1200);
+          }
+        });
+      });
+    })();
+  </script>
+</BaseLayout>

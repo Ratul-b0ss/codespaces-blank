@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  preloadHero?: boolean;
+}
+
+const { title, description, preloadHero } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="color-scheme" content="dark" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  {preloadHero && (
+    <link
+      rel="preload"
+      href="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=1200&q=80"
+      as="image"
+      fetchpriority="high"
+    />
+  )}
+
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+
+  <slot name="head" />
+</head>
+<body>
+  <slot />
+</body>
+</html>

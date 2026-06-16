@@ -1,0 +1,381 @@
+---
+// Navigation — cart with delivery info checkout
+---
+
+<nav class="sticky top-0 z-[100] h-14 flex items-center border-b border-hairline bg-canvas">
+  <div class="container-custom flex items-center justify-between w-full">
+    <a href="/" class="flex items-center gap-2 no-underline text-ink font-semibold text-lg -tracking-tighter">
+      <span class="w-8 h-8 bg-primary text-on-primary rounded-lg flex items-center justify-center text-xs font-bold">JV</span>
+      Jumanji Vault
+    </a>
+
+    <ul class="flex items-center gap-1 list-none" id="navLinks">
+      <li><a href="#products" class="no-underline text-body text-sm font-normal px-3 py-2 rounded-lg hover:text-ink hover:bg-canvas-soft-2 transition-[color,background] duration-200">Products</a></li>
+      <li><a href="#products" class="no-underline text-body text-sm font-normal px-3 py-2 rounded-lg hover:text-ink hover:bg-canvas-soft-2 transition-[color,background] duration-200">Browse</a></li>
+    </ul>
+
+    <div class="flex items-center gap-3">
+      <button id="cartToggle" class="relative hidden md:inline-flex items-center gap-1.5 font-sans text-sm font-medium leading-5 border border-hairline cursor-pointer rounded-lg h-8 px-3 transition-all duration-200 hover:border-gold/30 hover:text-gold bg-canvas text-body">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Cart <span id="cartCount" class="hidden ml-0.5 w-4 h-4 rounded-full bg-gold text-on-primary text-[10px] font-bold inline-flex items-center justify-center">0</span>
+      </button>
+      <button class="md:hidden bg-none border-none cursor-pointer p-2 text-ink hover:text-gold transition-colors duration-200" id="menuToggle" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="w-6 h-6">
+          <line x1="4" y1="7" x2="20" y2="7"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Cart Drawer -->
+<div id="cartDrawer" class="fixed top-0 right-0 z-[200] h-full w-full max-w-sm bg-canvas border-l border-hairline shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+  <div class="flex items-center justify-between p-4 border-b border-hairline">
+    <h3 class="font-sans text-base font-semibold text-ink">Your Cart</h3>
+    <button id="cartClose" class="text-body hover:text-ink transition-colors duration-200 text-lg leading-none cursor-pointer bg-none border-none p-1">&times;</button>
+  </div>
+  <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3">
+    <p class="text-body text-sm text-center mt-8" id="cartEmpty">Your cart is empty.</p>
+  </div>
+  <div class="border-t border-hairline p-4" id="cartFooter">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-sm text-body">Total</span>
+      <span id="cartTotal" class="text-base font-bold text-gold">৳0</span>
+    </div>
+    <button id="checkoutBtn" class="w-full font-sans text-sm font-bold leading-5 py-3 border-none cursor-pointer rounded-lg transition-all duration-300 hover:shadow-glow-gold bg-primary text-on-primary disabled:opacity-30 disabled:cursor-not-allowed" disabled>Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- Delivery Info Modal -->
+<div id="deliveryModal" class="fixed inset-0 z-[300] hidden items-center justify-center bg-black/60">
+  <div class="bg-canvas rounded-xl border border-hairline p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-sans text-base font-semibold text-ink">Delivery Information</h3>
+      <button id="deliveryClose" class="text-body hover:text-ink text-lg leading-none cursor-pointer bg-none border-none p-1">&times;</button>
+    </div>
+
+    <div class="space-y-3 mb-4">
+      <div>
+        <label class="font-mono text-[11px] text-mute uppercase tracking-[0.05em] block mb-1">Full Name *</label>
+        <input id="delName" type="text" class="w-full h-10 px-3 rounded-lg border border-hairline bg-canvas-soft text-ink text-sm outline-none focus:border-gold/50" required />
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-mute uppercase tracking-[0.05em] block mb-1">Phone Number *</label>
+        <input id="delPhone" type="tel" placeholder="01XXXXXXXXX" class="w-full h-10 px-3 rounded-lg border border-hairline bg-canvas-soft text-ink text-sm outline-none focus:border-gold/50" required />
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-mute uppercase tracking-[0.05em] block mb-1">Address *</label>
+        <textarea id="delAddress" rows="2" class="w-full px-3 py-2 rounded-lg border border-hairline bg-canvas-soft text-ink text-sm outline-none focus:border-gold/50 resize-none" required></textarea>
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-mute uppercase tracking-[0.05em] block mb-1">City *</label>
+        <input id="delCity" type="text" placeholder="e.g. Dhaka" class="w-full h-10 px-3 rounded-lg border border-hairline bg-canvas-soft text-ink text-sm outline-none focus:border-gold/50" required />
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-mute uppercase tracking-[0.05em] block mb-1">Payment Method *</label>
+        <select id="delPayment" class="w-full h-10 px-3 rounded-lg border border-hairline bg-canvas-soft text-ink text-sm outline-none focus:border-gold/50">
+          <option value="Cash on Delivery">Cash on Delivery</option>
+          <option value="bKash">bKash</option>
+          <option value="Nagad">Nagad</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Payment Instructions -->
+    <div id="paymentInfo" class="hidden bg-canvas-soft-2 rounded-lg border border-hairline p-3 mb-4 text-xs text-body leading-relaxed"></div>
+
+    <!-- Cart Summary -->
+    <div class="bg-canvas-soft rounded-lg border border-hairline p-3 mb-4">
+      <p class="font-mono text-[11px] text-mute uppercase tracking-[0.05em] mb-2">Order Summary</p>
+      <div id="delOrderItems" class="text-xs text-body space-y-1 mb-2"></div>
+      <div class="flex items-center justify-between pt-2 border-t border-hairline">
+        <span class="text-sm text-ink font-medium">Total</span>
+        <span id="delTotal" class="text-base font-bold text-gold">৳0</span>
+      </div>
+    </div>
+
+    <button id="placeOrderBtn" class="w-full font-sans text-sm font-bold leading-5 py-3 border-none cursor-pointer rounded-lg transition-all duration-300 hover:shadow-glow-gold bg-primary text-on-primary">Place Order</button>
+    <p id="orderSuccess" class="hidden text-center text-green-400 text-sm mt-3">✓ Order placed! Thank you.</p>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div id="cartOverlay" class="fixed inset-0 z-[199] bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+<style is:global>
+  @media (max-width: 768px) {
+    #navLinks {
+      display: none;
+      position: absolute;
+      top: 56px;
+      left: 0;
+      right: 0;
+      background: #090909;
+      flex-direction: column;
+      padding: 16px;
+      border-bottom: 1px solid #1e1e1e;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    #navLinks.open { display: flex; }
+    #navLinks a { width: 100%; padding: 12px 16px; border-radius: 8px; }
+  }
+</style>
+
+<script>
+  (function() {
+    'use strict';
+
+    const CART_KEY = 'jumanji_cart';
+    const ORDERS_KEY = 'jumanji_orders';
+    const SETTINGS_KEY = 'jumanji_settings';
+
+    function getCart() {
+      try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function getSettings() {
+      try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; }
+      catch { return {}; }
+    }
+
+    function addToCart(product) {
+      const cart = getCart();
+      const existing = cart.find(item => item.name === product.name);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+      saveCart(cart);
+      openCart();
+    }
+
+    function removeFromCart(name) {
+      const cart = getCart().filter(item => item.name !== name);
+      saveCart(cart);
+    }
+
+    function updateQty(name, delta) {
+      const cart = getCart();
+      const item = cart.find(i => i.name === name);
+      if (!item) return;
+      item.qty = Math.max(0, (item.qty || 1) + delta);
+      if (item.qty === 0) {
+        removeFromCart(name);
+      } else {
+        saveCart(cart);
+      }
+    }
+
+    function fmtPrice(price) {
+      const num = parseFloat(price.replace(/[^0-9.]/g, ''));
+      return isNaN(num) ? price : '৳' + num.toLocaleString('en-IN');
+    }
+
+    function fmtPriceNum(num) {
+      return '৳' + num.toLocaleString('en-IN');
+    }
+
+    // Mobile menu toggle
+    const toggle = document.getElementById('menuToggle');
+    const links = document.getElementById('navLinks');
+    if (toggle && links) {
+      toggle.addEventListener('click', () => links.classList.toggle('open'));
+      links.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => links.classList.remove('open'));
+      });
+    }
+
+    // ─── Cart UI ─────────────────────────────────────────
+    function renderCart() {
+      const cart = getCart();
+      const container = document.getElementById('cartItems');
+      const totalEl = document.getElementById('cartTotal');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="text-body text-sm text-center mt-8">Your cart is empty.</p>';
+        totalEl.textContent = '৳0';
+        checkoutBtn.disabled = true;
+        return;
+      }
+
+      let total = 0;
+      let html = '';
+      cart.forEach(item => {
+        const itemTotal = parseFloat(item.price.replace(/[^0-9.]/g, '')) * (item.qty || 1);
+        total += itemTotal;
+        html += `
+          <div class="flex items-center gap-3 p-3 rounded-lg bg-canvas-soft border border-hairline">
+            <img src="${item.imageUrl}" alt="${item.name}" class="w-14 h-14 rounded-md object-cover" />
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-ink truncate">${item.name}</p>
+              <p class="text-xs text-mute">${item.categoryLabel}</p>
+              <p class="text-sm font-bold text-gold mt-0.5">${fmtPrice(item.price)}</p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="window.__updateQty('${item.name.replace(/'/g, "\\'")}', -1)" class="w-6 h-6 rounded-full border border-hairline bg-canvas text-body text-xs cursor-pointer hover:text-ink hover:border-gold/30 transition-colors duration-150">−</button>
+              <span class="text-xs font-medium text-ink w-5 text-center">${item.qty || 1}</span>
+              <button onclick="window.__updateQty('${item.name.replace(/'/g, "\\'")}', 1)" class="w-6 h-6 rounded-full border border-hairline bg-canvas text-body text-xs cursor-pointer hover:text-ink hover:border-gold/30 transition-colors duration-150">+</button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      totalEl.textContent = fmtPriceNum(total);
+      checkoutBtn.disabled = false;
+      window.__updateQty = updateQty;
+    }
+
+    function updateCartUI() {
+      const cart = getCart();
+      const count = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+      const countEl = document.getElementById('cartCount');
+      if (countEl) {
+        countEl.textContent = count;
+        countEl.classList.toggle('hidden', count === 0);
+      }
+      renderCart();
+    }
+
+    // Drawer open/close
+    function openCart() {
+      document.getElementById('cartDrawer')?.classList.remove('translate-x-full');
+      const overlay = document.getElementById('cartOverlay');
+      if (overlay) { overlay.classList.remove('opacity-0', 'pointer-events-none'); overlay.classList.add('opacity-100', 'pointer-events-auto'); }
+      renderCart();
+    }
+
+    function closeCart() {
+      document.getElementById('cartDrawer')?.classList.add('translate-x-full');
+      const overlay = document.getElementById('cartOverlay');
+      if (overlay) { overlay.classList.add('opacity-0', 'pointer-events-none'); overlay.classList.remove('opacity-100', 'pointer-events-auto'); }
+    }
+
+    // ─── Checkout / Delivery Form ────────────────────────
+    function openDeliveryForm() {
+      const cart = getCart();
+      if (cart.length === 0) return;
+
+      // Show summary
+      let total = 0;
+      let itemsHtml = '';
+      cart.forEach(item => {
+        const itemTotal = parseFloat(item.price.replace(/[^0-9.]/g, '')) * (item.qty || 1);
+        total += itemTotal;
+        itemsHtml += `<div class="flex justify-between"><span>${item.name} x${item.qty || 1}</span><span>${fmtPriceNum(itemTotal)}</span></div>`;
+      });
+      document.getElementById('delOrderItems').innerHTML = itemsHtml;
+      document.getElementById('delTotal').textContent = fmtPriceNum(total);
+      document.getElementById('orderSuccess').classList.add('hidden');
+      document.getElementById('placeOrderBtn').classList.remove('hidden');
+
+      // Reset form
+      document.getElementById('delName').value = '';
+      document.getElementById('delPhone').value = '';
+      document.getElementById('delAddress').value = '';
+      document.getElementById('delCity').value = '';
+      document.getElementById('delPayment').value = 'Cash on Delivery';
+      document.getElementById('paymentInfo').classList.add('hidden');
+
+      // Close cart drawer, open delivery modal
+      closeCart();
+      document.getElementById('deliveryModal').classList.remove('hidden');
+      document.getElementById('deliveryModal').classList.add('flex');
+    }
+
+    // Show payment instructions based on method
+    document.getElementById('delPayment')?.addEventListener('change', function() {
+      const settings = getSettings();
+      const info = document.getElementById('paymentInfo');
+      if (this.value === 'bKash' && settings.bkash) {
+        info.innerHTML = `<strong class="text-ink">bKash Payment</strong><br />Send payment to: <strong class="text-gold">${settings.bkash}</strong><br />After sending, keep the transaction ID for reference.`;
+        info.classList.remove('hidden');
+      } else if (this.value === 'Nagad' && settings.nagad) {
+        info.innerHTML = `<strong class="text-ink">Nagad Payment</strong><br />Send payment to: <strong class="text-gold">${settings.nagad}</strong><br />After sending, keep the transaction ID for reference.`;
+        info.classList.remove('hidden');
+      } else if (this.value === 'Cash on Delivery') {
+        info.innerHTML = '<strong class="text-ink">Cash on Delivery</strong><br />Pay in cash when your order arrives. No advance payment needed.';
+        info.classList.remove('hidden');
+      } else {
+        info.classList.add('hidden');
+      }
+    });
+
+    // Place order
+    document.getElementById('placeOrderBtn')?.addEventListener('click', function() {
+      const name = document.getElementById('delName').value.trim();
+      const phone = document.getElementById('delPhone').value.trim();
+      const address = document.getElementById('delAddress').value.trim();
+      const city = document.getElementById('delCity').value.trim();
+      const payment = document.getElementById('delPayment').value;
+
+      if (!name || !phone || !address || !city) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      const cart = getCart();
+      const total = cart.reduce((s, item) => s + parseFloat(item.price.replace(/[^0-9.]/g, '')) * (item.qty || 1), 0);
+
+      const order = {
+        items: cart,
+        total,
+        delivery: { name, phone, address, city, payment },
+        date: Date.now(),
+      };
+
+      const orders = (() => { try { return JSON.parse(localStorage.getItem(ORDERS_KEY)) || []; } catch { return []; } })();
+      orders.push(order);
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+
+      // Clear cart
+      localStorage.setItem(CART_KEY, '[]');
+      updateCartUI();
+
+      // Show success
+      document.getElementById('orderSuccess').classList.remove('hidden');
+      this.classList.add('hidden');
+
+      // Reset payment info
+      document.getElementById('paymentInfo').classList.add('hidden');
+
+      // Dispatch event
+      window.dispatchEvent(new CustomEvent('order-placed'));
+    });
+
+    // Close delivery modal
+    function closeDeliveryForm() {
+      document.getElementById('deliveryModal').classList.add('hidden');
+      document.getElementById('deliveryModal').classList.remove('flex');
+    }
+
+    document.getElementById('deliveryClose')?.addEventListener('click', closeDeliveryForm);
+    document.getElementById('deliveryModal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeDeliveryForm();
+    });
+
+    // ─── Event Listeners ─────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('cartToggle')?.addEventListener('click', openCart);
+      document.getElementById('cartClose')?.addEventListener('click', closeCart);
+      document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCart(); closeDeliveryForm(); } });
+
+      // Checkout button opens delivery form
+      document.getElementById('checkoutBtn')?.addEventListener('click', openDeliveryForm);
+
+      window.__addToCart = addToCart;
+      updateCartUI();
+    });
+  })();
+</script>

@@ -1,0 +1,84 @@
+---
+// Footer — dark theme
+---
+
+<footer class="bg-canvas-soft border-t border-hairline py-4xl">
+  <div class="container-custom">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+      <div class="col-span-2 md:col-span-1">
+        <a href="/" class="inline-flex items-center gap-2 no-underline text-ink font-semibold text-lg -tracking-tighter mb-3">
+          <span class="w-7 h-7 bg-primary text-on-primary rounded-lg flex items-center justify-center text-[10px] font-bold">JV</span>
+          Jumanji Vault
+        </a>
+        <p class="text-body/60 text-sm leading-relaxed max-w-xs">
+          Premium LEGO minifigures and sets for collectors worldwide.
+        </p>
+        <div id="footerContact" class="mt-3 text-xs text-body/60 space-y-1"></div>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-[11px] text-mute uppercase tracking-[0.08em] mb-3">Products</h4>
+        <ul class="flex flex-col gap-2 list-none">
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">City</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Star Wars</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Technic</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Classic</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Friends</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-[11px] text-mute uppercase tracking-[0.08em] mb-3">Support</h4>
+        <ul class="flex flex-col gap-2 list-none">
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">FAQ</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Shipping</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Returns</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-[11px] text-mute uppercase tracking-[0.08em] mb-3">Company</h4>
+        <ul class="flex flex-col gap-2 list-none">
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">About</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Blog</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Privacy</a></li>
+          <li><a href="#" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Terms</a></li>
+          <li><a href="/admin" class="text-body/60 text-sm no-underline transition-colors duration-200 hover:text-gold">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        const SETTINGS_KEY = 'jumanji_settings';
+        function renderContact() {
+          try {
+            const s = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {};
+            const el = document.getElementById('footerContact');
+            if (!el) return;
+            const parts = [];
+            if (s.contact) parts.push('<span>📞 ' + s.contact + '</span>');
+            if (s.bkash) parts.push('<span>💳 bKash: ' + s.bkash + '</span>');
+            if (s.nagad) parts.push('<span>💳 Nagad: ' + s.nagad + '</span>');
+            if (s.email) parts.push('<span>✉️ ' + s.email + '</span>');
+            if (s.address) parts.push('<span>📍 ' + s.address + '</span>');
+            el.innerHTML = parts.join('');
+          } catch {}
+        }
+        document.addEventListener('DOMContentLoaded', renderContact);
+        window.addEventListener('settings-updated', renderContact);
+      })();
+    </script>
+
+    <div class="flex flex-wrap items-center justify-between gap-4 mt-12 pt-5 border-t border-hairline">
+      <p class="text-mute text-xs">© 2026 Jumanji Vault. All rights reserved.</p>
+      <div class="flex gap-4">
+        <a href="#" aria-label="Facebook" class="text-mute text-xs no-underline transition-colors duration-200 hover:text-gold">fb</a>
+        <a href="#" aria-label="Instagram" class="text-mute text-xs no-underline transition-colors duration-200 hover:text-gold">ig</a>
+        <a href="#" aria-label="Twitter" class="text-mute text-xs no-underline transition-colors duration-200 hover:text-gold">𝕏</a>
+        <a href="#" aria-label="YouTube" class="text-mute text-xs no-underline transition-colors duration-200 hover:text-gold">▶</a>
+      </div>
+    </div>
+  </div>
+</footer>
