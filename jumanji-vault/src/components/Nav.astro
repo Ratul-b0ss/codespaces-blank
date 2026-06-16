@@ -2,30 +2,21 @@
 // Navigation — cart with delivery info checkout
 ---
 
-<nav class="sticky top-0 z-[100] h-14 flex items-center border-b border-hairline bg-canvas">
+<nav class="sticky top-0 z-[100] h-14 flex items-center bg-canvas">
   <div class="container-custom flex items-center justify-between w-full">
     <a href="/" class="flex items-center gap-2 no-underline text-ink font-semibold text-lg -tracking-tighter">
       <span class="w-8 h-8 bg-primary text-on-primary rounded-lg flex items-center justify-center text-xs font-bold">JV</span>
       Jumanji Vault
     </a>
 
-    <ul class="flex items-center gap-1 list-none" id="navLinks">
-      <li><a href="#products" class="no-underline text-body text-sm font-normal px-3 py-2 rounded-lg hover:text-ink hover:bg-canvas-soft-2 transition-[color,background] duration-200">Products</a></li>
-      <li><a href="#products" class="no-underline text-body text-sm font-normal px-3 py-2 rounded-lg hover:text-ink hover:bg-canvas-soft-2 transition-[color,background] duration-200">Browse</a></li>
-    </ul>
+
 
     <div class="flex items-center gap-3">
-      <button id="cartToggle" class="relative hidden md:inline-flex items-center gap-1.5 font-sans text-sm font-medium leading-5 border border-hairline cursor-pointer rounded-lg h-8 px-3 transition-all duration-200 hover:border-gold/30 hover:text-gold bg-canvas text-body">
+      <button id="cartToggle" class="relative inline-flex items-center gap-1.5 font-sans text-sm font-medium leading-5 border border-hairline cursor-pointer rounded-lg h-8 px-3 transition-all duration-200 hover:border-gold/30 hover:text-gold bg-canvas text-body">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         Cart <span id="cartCount" class="hidden ml-0.5 w-4 h-4 rounded-full bg-gold text-on-primary text-[10px] font-bold inline-flex items-center justify-center">0</span>
       </button>
-      <button class="md:hidden bg-none border-none cursor-pointer p-2 text-ink hover:text-gold transition-colors duration-200" id="menuToggle" aria-label="Menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="w-6 h-6">
-          <line x1="4" y1="7" x2="20" y2="7"/>
-          <line x1="4" y1="12" x2="20" y2="12"/>
-          <line x1="4" y1="17" x2="20" y2="17"/>
-        </svg>
-      </button>
+
     </div>
   </div>
 </nav>
@@ -104,24 +95,7 @@
 <!-- Overlay -->
 <div id="cartOverlay" class="fixed inset-0 z-[199] bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
-<style is:global>
-  @media (max-width: 768px) {
-    #navLinks {
-      display: none;
-      position: absolute;
-      top: 56px;
-      left: 0;
-      right: 0;
-      background: #090909;
-      flex-direction: column;
-      padding: 16px;
-      border-bottom: 1px solid #1e1e1e;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-    }
-    #navLinks.open { display: flex; }
-    #navLinks a { width: 100%; padding: 12px 16px; border-radius: 8px; }
-  }
-</style>
+
 
 <script>
   (function() {
@@ -182,16 +156,6 @@
 
     function fmtPriceNum(num) {
       return '৳' + num.toLocaleString('en-IN');
-    }
-
-    // Mobile menu toggle
-    const toggle = document.getElementById('menuToggle');
-    const links = document.getElementById('navLinks');
-    if (toggle && links) {
-      toggle.addEventListener('click', () => links.classList.toggle('open'));
-      links.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => links.classList.remove('open'));
-      });
     }
 
     // ─── Cart UI ─────────────────────────────────────────
